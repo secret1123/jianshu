@@ -2,10 +2,9 @@ package jianshu.xin.servlet;
 
 import com.alibaba.fastjson.JSON;
 import com.google.code.kaptcha.Constants;
+import jianshu.xin.dao.UserDao;
 import jianshu.xin.model.User;
 import jianshu.xin.util.Error;
-import jianshu.xin.util.MybatisUtil;
-import org.apache.ibatis.session.SqlSession;
 import org.jasypt.util.password.StrongPasswordEncryptor;
 
 import javax.servlet.ServletException;
@@ -26,6 +25,13 @@ import java.util.Map;
  */
 @WebServlet(urlPatterns = "/user")
 public class UserAction extends HttpServlet {
+
+    private UserDao userDao;
+
+    public void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
+    }
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String action = req.getParameter("action");
@@ -102,9 +108,7 @@ public class UserAction extends HttpServlet {
         String password = encryptor.encryptPassword(plainPassword);
         String lastIp = req.getRemoteAddr();
 
-        try (SqlSession sqlSession = MybatisUtil.getSqlSession(true)) {
-            sqlSession.insert("user.signUp", new User(nick, mobile, password, lastIp));
-        }
+        userDao.signUp(new User(nick, mobile, password, lastIp));
 
         resp.sendRedirect("sign_in.jsp");
     }
@@ -113,10 +117,7 @@ public class UserAction extends HttpServlet {
         String mobile = req.getParameter("mobile").trim();
         String plainPassword = req.getParameter("password");
 
-        User user;
-        try (SqlSession sqlSession = MybatisUtil.getSqlSession(false)) {
-            user = sqlSession.selectOne("user.queryUserByMobile", mobile);
-        }
+        User user = userDao.queryUserByMobile(mobile);
 
         if (user != null) {
             String encryptedPassword = user.getPassword();
@@ -127,9 +128,7 @@ public class UserAction extends HttpServlet {
                 String lastTime = format.format(new Date());
                 user.setLastIp(lastIp);
                 user.setLastTime(lastTime);
-                try (SqlSession sqlSession = MybatisUtil.getSqlSession(true)) {
-                    sqlSession.update("user.signInUpdate", user);
-                }
+                userDao.signInUpdate(user);
                 return user;
             }
         }
@@ -214,15 +213,11 @@ public class UserAction extends HttpServlet {
         boolean isMobileExisted = false;
 
         if (field.equals("nick")) {
-            try (SqlSession sqlSession = MybatisUtil.getSqlSession(false)) {
-                User user = sqlSession.selectOne("user.queryUserByNick", value);
-                isNickExisted = (user != null);
-            }
+            User user = userDao.queryUserByNick(value);
+            isNickExisted = (user != null);
         } else {
-            try (SqlSession sqlSession = MybatisUtil.getSqlSession(false)) {
-                User user = sqlSession.selectOne("user.queryUserByMobile", value);
-                isMobileExisted = (user != null);
-            }
+            User user = userDao.queryUserByMobile(value);
+            isMobileExisted = (user != null);
         }
         return isNickExisted || isMobileExisted;
     }
