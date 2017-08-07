@@ -9,8 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import jianshu.xin.util.GeetestLib;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 
 

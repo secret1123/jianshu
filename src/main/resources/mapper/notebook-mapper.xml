@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="notebook">
+    <insert id="create" parameterType="notebook" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO db_jianshu.notebook (title, userId) VALUE (#{title}, #{userId})
+    </insert>
+    <select id="queryAll" resultType="notebook">
+        SELECT *
+        FROM db_jianshu.notebook
+        ORDER BY id
+    </select>
+</mapper>

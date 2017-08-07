@@ -22,7 +22,7 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li class="set">
-                            <img src="static/image/moon_fill.svg" alt="" width="15"> 夜间模式
+                            <img src="assets/image/moon_fill.svg" alt="" width="15"> 夜间模式
                             <input type="checkbox" name="night-mode">
                         </li>
                         <li class="divider"></li>

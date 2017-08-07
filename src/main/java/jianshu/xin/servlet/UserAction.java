@@ -1,6 +1,5 @@
 package jianshu.xin.servlet;
 
-import com.alibaba.fastjson.JSON;
 import com.google.code.kaptcha.Constants;
 import jianshu.xin.dao.UserDao;
 import jianshu.xin.model.User;
