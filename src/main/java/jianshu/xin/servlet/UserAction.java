@@ -3,7 +3,6 @@ package jianshu.xin.servlet;
 import com.google.code.kaptcha.Constants;
 import jianshu.xin.dao.UserDao;
 import jianshu.xin.model.User;
-import jianshu.xin.util.Error;
 import org.jasypt.util.password.StrongPasswordEncryptor;
 
 import javax.servlet.ServletException;

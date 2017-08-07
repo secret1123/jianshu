@@ -2,7 +2,6 @@ package jianshu.xin.dao.impl;
 
 import jianshu.xin.dao.UserDao;
 import jianshu.xin.model.User;
-import jianshu.xin.util.MybatisUtil;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
