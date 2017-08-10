@@ -11,5 +11,4 @@ import java.io.Serializable;
  */
 public abstract class GenericServiceImpl<M extends Serializable,ID extends Number> implements GenericService<M,ID> {
 
-
 }
