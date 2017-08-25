@@ -33,10 +33,12 @@ CREATE TABLE db_jianshu.user (
 # 2. 文集 notebook
 DROP TABLE IF EXISTS db_jianshu.notebook;
 CREATE TABLE db_jianshu.notebook (
-  id     INT AUTO_INCREMENT PRIMARY KEY
+  id     INT      AUTO_INCREMENT PRIMARY KEY
   COMMENT 'ID PK',
   title  VARCHAR(255) NOT NULL
   COMMENT '名称',
+  time   DATETIME DEFAULT now()
+  COMMENT '时间',
   userId INT COMMENT 'FK 用户 ID'
 )
   COMMENT '文集表';
@@ -48,6 +50,8 @@ CREATE TABLE db_jianshu.note (
   COMMENT 'ID PK',
   title      VARCHAR(255) NOT NULL
   COMMENT '标题',
+  markdown   TEXT         NOT NULL
+  COMMENT 'markdown',
   content    TEXT         NOT NULL
   COMMENT '内容',
   time       DATETIME DEFAULT now()
@@ -58,9 +62,17 @@ CREATE TABLE db_jianshu.note (
 )
   COMMENT '文章表';
 
-# like table: id userId noteId
+# 4.喜欢 like
+DROP TABLE IF EXISTS db_jianshu.like;
+CREATE TABLE db_jianshu.like (
+  id     INT AUTO_INCREMENT PRIMARY KEY
+  COMMENT 'ID PK',
+  noteId INT COMMENT 'FK 文章 ID',
+  userId INT COMMENT 'FK 用户 ID'
+)
+  COMMENT '喜欢表';
 
-# 4. 评论 comment
+# 5. 评论 comment
 DROP TABLE IF EXISTS db_jianshu.comment;
 CREATE TABLE db_jianshu.comment (
   id        INT      AUTO_INCREMENT PRIMARY KEY
@@ -75,9 +87,9 @@ CREATE TABLE db_jianshu.comment (
 )
   COMMENT '评论表';
 
-# zan table: id userId commentId time
+# 6. 赞 table: id userId commentId time
 
-# 5. 专题 collection
+# 7. 专题 collection
 DROP TABLE IF EXISTS db_jianshu.collection;
 CREATE TABLE db_jianshu.collection (
   id     INT AUTO_INCREMENT PRIMARY KEY
@@ -88,7 +100,7 @@ CREATE TABLE db_jianshu.collection (
 )
   COMMENT '专题表';
 
-# 6. 专题-文章 collection_note
+# 8. 专题-文章 collection_note
 DROP TABLE IF EXISTS db_jianshu.collection_note;
 CREATE TABLE db_jianshu.collection_note (
   collectionId INT COMMENT 'PK FK',
@@ -97,7 +109,7 @@ CREATE TABLE db_jianshu.collection_note (
 )
   COMMENT '';
 
-# 7. 关注 follow
+# 9. 关注 follow
 DROP TABLE IF EXISTS db_jianshu.follow;
 CREATE TABLE db_jianshu.follow (
   id                   INT               AUTO_INCREMENT PRIMARY KEY
@@ -111,7 +123,7 @@ CREATE TABLE db_jianshu.follow (
 )
   COMMENT '关注表';
 
-# 8. 收藏 bookmark
+# 10. 收藏 bookmark
 DROP TABLE IF EXISTS db_jianshu.bookmark;
 CREATE TABLE db_jianshu.bookmark (
   id     INT AUTO_INCREMENT PRIMARY KEY
@@ -121,7 +133,7 @@ CREATE TABLE db_jianshu.bookmark (
 )
   COMMENT '收藏表';
 
-# 9. 打赏 pay
+# 11. 打赏 pay
 DROP TABLE IF EXISTS db_jianshu.pay;
 CREATE TABLE db_jianshu.pay (
   id      INT AUTO_INCREMENT PRIMARY KEY
@@ -148,6 +160,18 @@ ALTER TABLE db_jianshu.note
   note_fk_notebookId
 FOREIGN KEY (notebookId)
 REFERENCES db_jianshu.notebook (id);
+
+ALTER TABLE db_jianshu.like
+  ADD CONSTRAINT
+  like_fk_userId
+FOREIGN KEY (userId)
+REFERENCES db_jianshu.user (id);
+
+ALTER TABLE db_jianshu.like
+  ADD CONSTRAINT
+  like_fk_noteId
+FOREIGN KEY (noteId)
+REFERENCES db_jianshu.note (id);
 
 ALTER TABLE db_jianshu.comment
   ADD CONSTRAINT
@@ -232,6 +256,26 @@ ALTER TABLE db_jianshu.pay
   pay_fk_noteId
 FOREIGN KEY (noteId)
 REFERENCES db_jianshu.note (id);
+
+-- FUNCTION
+
+# 去掉 note.content 中的HTML标签
+DROP FUNCTION IF EXISTS db_jianshu.strip_tags;
+CREATE FUNCTION db_jianshu.strip_tags($str TEXT)
+  RETURNS TEXT
+  BEGIN
+    DECLARE $start,$end INT DEFAULT 1;
+    LOOP
+      SET $start = LOCAL ('<',$str,$start);
+      IF (!$start)
+        THEN RETURN $str;END IF;
+      SET $end = LOCAL ('>',$str,$start);
+      IF (!$end)
+        THEN SET $end = $start;END IF;
+      SET $str = INSERT ($str,$start,$end - $start + 1,"");
+    END LOOP;
+  END;
+
 
 -- SELECT
 SELECT *

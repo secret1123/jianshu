@@ -3,6 +3,7 @@ package jianshu.xin.service;
 import jianshu.xin.util.Pagination;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by AnLu on
@@ -11,9 +12,9 @@ import java.io.Serializable;
  */
 public interface GenericService<M extends Serializable,ID extends Number> {
 
-    void create(M model);
+    M create(M model);
 
-    void create(String statement,Object parameter);
+    Object create(String statement,Object parameter);
 
     void removeById(ID id);
 
@@ -25,7 +26,11 @@ public interface GenericService<M extends Serializable,ID extends Number> {
 
     M queryById(ID id);
 
-    M query(String statement,Object parameter);
+    M queryOne(String statement,Object parameter);
+
+    List<Object> queryList(String statement,Object parameter);
+
+    List<M> queryAll();
 
     Pagination<M> queryAll(int currentPage);
 

@@ -21,4 +21,21 @@
         FROM db_jianshu.user
         WHERE nick = #{nick}
     </select>
+
+    <resultMap id="singInQueryById_map" type="user">
+        <id property="id" column="id"/>
+        <collection property="notebooks" ofType="notebook">
+            <id property="id" column="notebook_id"/>
+            <result property="title" column="title"/>
+        </collection>
+    </resultMap>
+    <select id="signInQueryById" parameterType="int" resultMap="singInQueryById_map">
+        SELECT
+            u.id,
+            n.id AS notebook_id,
+            n.title
+        FROM db_jianshu.user u LEFT JOIN db_jianshu.notebook n
+                ON u.id = n.userId
+        WHERE u.id = #{id};
+    </select>
 </mapper>

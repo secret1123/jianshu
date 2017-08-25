@@ -8,4 +8,6 @@ import jianshu.xin.model.Notebook;
  * jianshu
  */
 public interface NotebookService extends GenericService<Notebook,Integer> {
+
+    void init(int userId);
 }

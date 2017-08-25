@@ -11,4 +11,25 @@
         FROM db_jianshu.notebook
         ORDER BY id
     </select>
+
+    <resultMap id="queryNotesById_map" type="notebook">
+        <id property="id" column="id"/>
+        <collection property="notes" ofType="note">
+            <id property="id" column="note_id"/>
+            <result property="title" column="title"/>
+            <result property="content" column="content"/>
+            <result property="markdown" column="markdown"/>
+        </collection>
+    </resultMap>
+    <select id="queryNotesById" parameterType="int" resultMap="queryNotesById_map">
+        SELECT
+            nb.id,
+            n.id AS note_id,
+            n.title,
+            n.content,
+            n.markdown
+        FROM db_jianshu.notebook nb LEFT JOIN db_jianshu.note n
+                ON nb.id = n.notebookId
+        WHERE nb.id = #{id};
+    </select>
 </mapper>

@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by AnLu on
@@ -15,7 +15,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class User extends BaseModel implements Serializable { // 标识接口
+public class User extends BaseModel { // 标识接口
 
     private Integer id;
     private String nick;
@@ -28,4 +28,5 @@ public class User extends BaseModel implements Serializable { // 标识接口
     private String lastTime;
     private String signUpTime;
 
+    private List<Notebook> notebooks;
    }

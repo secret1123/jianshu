@@ -9,7 +9,7 @@ import jianshu.xin.model.User;
  */
 public interface UserService extends GenericService<User,Integer>{
 
-    void signUp(User user);
+    int signUp(User user);
 
     User queryUserByNick(String nick);
 
